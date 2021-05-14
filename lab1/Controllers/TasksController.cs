@@ -42,6 +42,19 @@ namespace lab1.Controllers
             return tasks;
         }
 
+
+        // GET: api/Tasks/filter
+        [HttpGet("{startDate & endDate}")]
+        [Route ("filter")]
+        public async Task<ActionResult<IEnumerable<Tasks>>> GetTasks(DateTime startDate, DateTime endDate)
+        {
+            var query = _context.Tasks.Where(t => t.Deadline >= startDate && t.Deadline <= endDate);
+            Console.WriteLine(query.ToQueryString());
+
+            return await query.ToListAsync();
+
+        }
+
         // PUT: api/Tasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

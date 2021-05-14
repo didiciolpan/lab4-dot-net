@@ -17,8 +17,8 @@ namespace lab1.Models
         [DataType(DataType.DateTime)]
         public DateTime DateTimeAdded { get; set; }
 
-        [MinLength(5)]
-        public string Deadline { get; set; }
+        [DataType(DataType.DateTime)]
+        public DateTime Deadline { get; set; }
 
         [RegularExpression("Low|Medium|High|...", ErrorMessage = "Importance can only have values Low, Medium or High")]
         public string Importance { get; set; }

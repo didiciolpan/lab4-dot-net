@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using lab1.Data;
 using lab1.Models;
+using lab2.Models;
 
 namespace lab1.Controllers
 {
@@ -54,6 +55,34 @@ namespace lab1.Controllers
             return await query.ToListAsync();
 
         }
+
+        [HttpGet("{id}/Comments")]
+        public ActionResult<IEnumerable<Object>> GetCommentsForTasks(int id)
+        {
+            var query = _context.Comments.Where(c => c.Tasks.Id == id).Include(c => c.Tasks).Select(c => new
+            {
+                Task = c.Tasks.Title,
+                Comment = c.Text
+            });
+
+            return query.ToList();
+        }
+
+        [HttpPost("{id}/Comments")]
+        public IActionResult PostCommentsForTasks(int id, Comment comment)
+        {
+            comment.Tasks = _context.Tasks.Find(id);
+            if (comment.Tasks == null)
+            {
+                return NotFound();
+            }
+            _context.Comments.Add(comment);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+
 
         // PUT: api/Tasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

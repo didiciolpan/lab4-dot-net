@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using lab2.Models;
 
 namespace lab1.Models
 {
@@ -29,5 +31,6 @@ namespace lab1.Models
         [DataType(DataType.DateTime)]
         public DateTime DateTimeClosedAt { get; set; }
 
+        public List<Comment> Comments { get; set; }
     }
 }

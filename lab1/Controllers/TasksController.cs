@@ -1,4 +1,4 @@
-using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using lab1.Data;
 using lab1.Models;
 using lab2.Models;
+using lab2.ViewModels;
 
 namespace lab1.Controllers
 {
@@ -31,22 +32,41 @@ namespace lab1.Controllers
 
         // GET: api/Tasks/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tasks>> GetTasks(int id)
+        public async Task<ActionResult<TasksViewModel>> GetTasks(int id)
         {
             var tasks = await _context.Tasks.FindAsync(id);
+
+            var tasksViewModel = new TasksViewModel
+            {
+                Title = tasks.Title,
+                Description = tasks.Description,
+                DateTimeAdded = tasks.DateTimeAdded,
+                Deadline = tasks.Deadline,
+                Importance = tasks.Importance,
+                Status = tasks.Status,
+                DateTimeClosedAt = tasks.DateTimeClosedAt
+              
+
+            };
 
             if (tasks == null)
             {
                 return NotFound();
             }
 
-            return tasks;
+            return tasksViewModel;
         }
 
 
+        /// <summary>
+        /// Returns tasks between selected dates
+        /// </summary>
+        /// <param name="startDate">The Start Date </param>
+        /// <param name="endDate">The End Date </param>
+        /// <returns>A list of tasks with from-to filter on date</returns>
         // GET: api/Tasks/filter
-        [HttpGet("{startDate & endDate}")]
-        [Route ("filter")]
+        [HttpGet]
+        [Route("filter/{startDate & endDate}")]
         public async Task<ActionResult<IEnumerable<Tasks>>> GetTasks(DateTime startDate, DateTime endDate)
         {
             var query = _context.Tasks.Where(t => t.Deadline >= startDate && t.Deadline <= endDate);

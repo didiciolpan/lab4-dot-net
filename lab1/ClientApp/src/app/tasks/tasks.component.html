@@ -1,0 +1,32 @@
+<h1 id="tableLabel">Tasks </h1>
+
+<p>This component lists the tasks.</p>
+
+<p *ngIf="!tasks"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="tasks">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Added at</th>
+            <th>Deadline</th>
+            <th>Importance</th>
+            <th>Status</th>
+            <th>Closed at</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let tasks of tasks">
+            <td>{{ tasks.id }}</td>
+            <td>{{ tasks.title }}</td>
+            <td>{{ tasks.description }}</td>
+            <td>{{ tasks.dateTimeAdded }}</td>
+            <td>{{ tasks.deadline }}</td>
+            <td>{{ tasks.importance }}</td>
+            <td>{{ tasks.status }}</td>
+            <td>{{ tasks.dateTimeClosedAt }}</td>
+        </tr>
+    </tbody>
+</table>

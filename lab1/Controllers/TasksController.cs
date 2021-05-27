@@ -9,6 +9,7 @@ using lab1.Data;
 using lab1.Models;
 using lab2.Models;
 using lab2.ViewModels;
+using AutoMapper;
 
 namespace lab1.Controllers
 {
@@ -17,12 +18,19 @@ namespace lab1.Controllers
     public class TasksController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper; 
 
-        public TasksController(ApplicationDbContext context)
+        public TasksController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper; 
         }
 
+
+        /// <summary>
+        /// Returns all existing tasks
+        /// </summary>
+        /// <returns>A list with all tasks</returns>
         // GET: api/Tasks
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tasks>>> GetTasks()
@@ -30,29 +38,23 @@ namespace lab1.Controllers
             return await _context.Tasks.ToListAsync();
         }
 
+        /// <summary>
+        /// Returns a task with by gived id
+        /// </summary>
+        /// <param name="id">The id of the task</param>
+        /// <returns>A task for a valid given id/returns>
         // GET: api/Tasks/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TasksViewModel>> GetTasks(int id)
         {
             var tasks = await _context.Tasks.FindAsync(id);
 
-            var tasksViewModel = new TasksViewModel
-            {
-                Title = tasks.Title,
-                Description = tasks.Description,
-                DateTimeAdded = tasks.DateTimeAdded,
-                Deadline = tasks.Deadline,
-                Importance = tasks.Importance,
-                Status = tasks.Status,
-                DateTimeClosedAt = tasks.DateTimeClosedAt
-              
-
-            };
-
             if (tasks == null)
             {
                 return NotFound();
             }
+
+            var tasksViewModel = _mapper.Map<TasksViewModel>(tasks);
 
             return tasksViewModel;
         }
@@ -76,6 +78,11 @@ namespace lab1.Controllers
 
         }
 
+        /// <summary>
+        /// Returns a Task with comments for a given id
+        /// </summary>
+        /// <param name="id">Id of the taks</param>
+        /// <returns>A task with comments by given id</returns>
         [HttpGet("{id}/Comments")]
         public ActionResult<IEnumerable<TasksWithCommentsViewModel>> GetCommentsForTasks(int id)
         {
@@ -118,10 +125,22 @@ namespace lab1.Controllers
 
                 })
             });
+
+            var query_v3 = _context.Tasks.Where(t => t.Id == id).Include(t => t.Comments).Select(t => _mapper.Map<TasksWithCommentsViewModel>(t));
+
          //   return query_v1.ToList();
-            return query_v2.ToList();
+         //   return query_v2.ToList();
+            return query_v3.ToList();
         }
 
+
+
+        /// <summary>
+        /// Add a comment to a task
+        /// </summary>
+        /// <param name="id">Id of the task</param>
+        /// <param name="comment">Comment for the task</param>
+        /// <returns>returns ok if comment was added and error if not</returns>
         [HttpPost("{id}/Comments")]
         public IActionResult PostCommentsForTasks(int id, Comment comment)
         {
@@ -137,7 +156,12 @@ namespace lab1.Controllers
         }
 
 
-
+        /// <summary>
+        /// Updates an existing task
+        /// </summary>
+        /// <param name="id">Id of the task</param>
+        /// <param name="tasks">The updated task</param>
+        /// <returns>Returns ok if update was successfully otherwise error</returns>
         // PUT: api/Tasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -169,6 +193,11 @@ namespace lab1.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Adds a task
+        /// </summary>
+        /// <param name="tasks">The task that will be added</param>
+        /// <returns>The added task</returns>
         // POST: api/Tasks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -180,6 +209,11 @@ namespace lab1.Controllers
             return CreatedAtAction("GetTasks", new { id = tasks.Id }, tasks);
         }
 
+        /// <summary>
+        /// Delete a specific task
+        /// </summary>
+        /// <param name="id">Id of the task that is going to be deleted</param>
+        /// <returns>Returns ok if deleted else not found</returns>
         // DELETE: api/Tasks/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTasks(int id)

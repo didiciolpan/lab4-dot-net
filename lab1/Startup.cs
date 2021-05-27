@@ -16,6 +16,10 @@ using System;
 using System.Reflection;
 using System.IO;
 using lab2;
+using lab2.ViewModels;
+using FluentValidation;
+using lab2.Validators;
+using FluentValidation.AspNetCore;
 
 namespace lab1
 {
@@ -79,7 +83,11 @@ namespace lab1
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
-            });  
+            });
+
+            services.AddTransient<IValidator<TasksViewModel>, TasksValidator>();
+            services.AddControllersWithViews().AddFluentValidation();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -77,15 +77,49 @@ namespace lab1.Controllers
         }
 
         [HttpGet("{id}/Comments")]
-        public ActionResult<IEnumerable<Object>> GetCommentsForTasks(int id)
+        public ActionResult<IEnumerable<TasksWithCommentsViewModel>> GetCommentsForTasks(int id)
         {
-            var query = _context.Comments.Where(c => c.Tasks.Id == id).Include(c => c.Tasks).Select(c => new
+            var query_v1 = _context.Comments.Where(c => c.Tasks.Id == id).Include(c => c.Tasks).Select(c => new TasksWithCommentsViewModel
             {
-                Task = c.Tasks.Title,
-                Comment = c.Text
+                Id = c.Tasks.Id,
+                Title = c.Tasks.Title,
+                Description = c.Tasks.Description,
+                DateTimeAdded = c.Tasks.DateTimeAdded,
+                Deadline = c.Tasks.Deadline,
+                Importance = c.Tasks.Importance,
+                Status = c.Tasks.Status,
+                DateTimeClosedAt = c.Tasks.DateTimeClosedAt,
+                Comments = c.Tasks.Comments.Select(tc => new CommentViewModel
+                {
+                    Id = tc.Id,
+                    Text = tc.Text,
+                    Important = tc.Important,
+                    DateTime = tc.DateTime
+
+                })
             });
 
-            return query.ToList();
+            var query_v2 = _context.Tasks.Where(t => t.Id == id).Include(t => t.Comments).Select(t => new TasksWithCommentsViewModel
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                DateTimeAdded = t.DateTimeAdded,
+                Deadline = t.Deadline,
+                Importance = t.Importance,
+                Status = t.Status,
+                DateTimeClosedAt = t.DateTimeClosedAt,
+                Comments = t.Comments.Select(tc => new CommentViewModel
+                {
+                    Id = tc.Id,
+                    Text = tc.Text,
+                    Important = tc.Important,
+                    DateTime = tc.DateTime
+
+                })
+            });
+         //   return query_v1.ToList();
+            return query_v2.ToList();
         }
 
         [HttpPost("{id}/Comments")]

@@ -165,8 +165,11 @@ namespace lab1.Controllers
         // PUT: api/Tasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTasks(int id, Tasks tasks)
+        public async Task<IActionResult> PutTasks(int id, TasksViewModel tasksViewModel)
         {
+
+            var tasks = _mapper.Map<Tasks>(tasksViewModel);
+
             if (id != tasks.Id)
             {
                 return BadRequest();
@@ -201,8 +204,10 @@ namespace lab1.Controllers
         // POST: api/Tasks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tasks>> PostTasks(Tasks tasks)
+        public async Task<ActionResult<Tasks>> PostTasks(TasksViewModel tasksViewModel)
         {
+            var tasks = _mapper.Map<Tasks>(tasksViewModel);
+
             _context.Tasks.Add(tasks);
             await _context.SaveChangesAsync();
 

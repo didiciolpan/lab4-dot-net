@@ -10,7 +10,7 @@ namespace lab2
     {
         public MappingProfile()
         {
-            CreateMap<Tasks, TasksViewModel>();
+            CreateMap<Tasks, TasksViewModel>().ReverseMap();
             CreateMap<Comment, CommentViewModel>();
             CreateMap<Tasks, TasksWithCommentsViewModel>();
 

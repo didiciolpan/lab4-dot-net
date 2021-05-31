@@ -16,18 +16,18 @@ namespace lab2.Validators
                 RuleFor(x => x.Title).MinimumLength(10);
                 RuleFor(x => x.Status).NotEmpty();
 
-                RuleFor(x => x.Title).Custom((prop, validationContext) =>
+            RuleFor(x => x.Title).Custom((prop, validationContext) =>
+            {
+                var instance = validationContext.InstanceToValidate;
+                int commentsForTypeCount = _context.Comments.Where(e => e.Tasks.Title.Equals(instance.Title)).Count();
+                if (commentsForTypeCount > 5)
                 {
-                    var instance = validationContext.InstanceToValidate;
-                    int commentsForTypeCount = _context.Comments.Where(e => e.Tasks.Title.Equals(instance.Title)).Count();
-                    if (commentsForTypeCount > 5)
-                    {
-                        validationContext.AddFailure($"Cannot add a task with title {instance.Title} " +
-                            $"because that Title has {commentsForTypeCount} comments");
-                    }
-                });
+                    validationContext.AddFailure($"Cannot add a task with title {instance.Title} " +
+                        $"because that Title has {commentsForTypeCount} comments");
+                }
+            });
 
-                RuleFor(x => x.DateTimeAdded).GreaterThanOrEqualTo(DateTime.Now);
+                RuleFor(x => x.DateTimeAdded).LessThanOrEqualTo(DateTime.Now);
                 RuleFor(x => x.DateTimeClosedAt).LessThanOrEqualTo(DateTime.Now);
              // RuleFor(x => x.Status).InclusiveBetween(??);
         }

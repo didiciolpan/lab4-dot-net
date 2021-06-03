@@ -3,6 +3,7 @@ using AutoMapper;
 using lab1.Models;
 using lab2.Models;
 using lab2.ViewModels;
+using lab2.ViewModels.AssignedTasks;
 
 namespace lab2
 {
@@ -12,7 +13,11 @@ namespace lab2
         {
             CreateMap<Tasks, TasksViewModel>().ReverseMap();
             CreateMap<Comment, CommentViewModel>();
+            CreateMap<ApplicationUser, ApplicationUserViewModel>().ReverseMap();
             CreateMap<Tasks, TasksWithCommentsViewModel>();
+            CreateMap<AssignedTasks, AssignedTasksForUserResponse>().ReverseMap();
+            //CreateMap<AssignedTasks, NewAssignedTask>().ReverseMap();
+
 
         }
     }

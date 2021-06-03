@@ -3,36 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using lab1.Data;
 
 namespace lab1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210601120239_MakeTaskNameUnique")]
+    partial class MakeTaskNameUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("AssignedTasksTasks", b =>
-                {
-                    b.Property<int>("AssignedTasksId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TasksId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AssignedTasksId", "TasksId");
-
-                    b.HasIndex("TasksId");
-
-                    b.ToTable("AssignedTasksTasks");
-                });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
                 {
@@ -373,26 +360,6 @@ namespace lab1.Migrations
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("lab2.Models.AssignedTasks", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("AssignedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("AssignedTasks");
-                });
-
             modelBuilder.Entity("lab2.Models.Comment", b =>
                 {
                     b.Property<long>("Id")
@@ -417,21 +384,6 @@ namespace lab1.Migrations
                     b.HasIndex("TasksId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("AssignedTasksTasks", b =>
-                {
-                    b.HasOne("lab2.Models.AssignedTasks", null)
-                        .WithMany()
-                        .HasForeignKey("AssignedTasksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("lab1.Models.Tasks", null)
-                        .WithMany()
-                        .HasForeignKey("TasksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -485,15 +437,6 @@ namespace lab1.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("lab2.Models.AssignedTasks", b =>
-                {
-                    b.HasOne("lab1.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("AssignedTasks")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.Navigation("ApplicationUser");
-                });
-
             modelBuilder.Entity("lab2.Models.Comment", b =>
                 {
                     b.HasOne("lab1.Models.Tasks", "Tasks")
@@ -501,11 +444,6 @@ namespace lab1.Migrations
                         .HasForeignKey("TasksId");
 
                     b.Navigation("Tasks");
-                });
-
-            modelBuilder.Entity("lab1.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("AssignedTasks");
                 });
 
             modelBuilder.Entity("lab1.Models.Tasks", b =>

@@ -15,11 +15,23 @@ namespace lab1.Data
     {
         public DbSet<Tasks> Tasks { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<AssignedTasks> AssignedTasks { get; set; }
 
         public ApplicationDbContext(
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+        {    
+        }
+
+        protected override void OnModelCreating (ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Tasks>()
+                .HasIndex(t => t.Title)
+                .IsUnique()
+                .HasFilter(null);
         }
     }
 }
